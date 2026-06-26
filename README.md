@@ -29,16 +29,14 @@ For each person instance, the dataset provides annotations for:
 
 * Human bounding box
 * Body keypoints
-* Face box and face keypoints
-* Left hand bounding box and hand keypoints
-* Right hand bounding box and hand keypoints
+* Left hand interaction region
+* Right hand interaction region
 * Left hand contact state
 * Right hand contact state
 * Left hand interaction target
 * Right hand interaction target
 * Target object/person segment ID
 * Target object/person bounding box
-* Hand-object interaction region
 * Validity flags
 
 The task requires a model to reason about the full person-centric interaction structure rather than detecting hands or objects independently.
@@ -51,8 +49,6 @@ Each annotation file contains:
 
 ```json
 {
-  "info": {},
-  "licenses": [],
   "images": [],
   "annotations": [],
   "categories": []
@@ -76,7 +72,6 @@ A segment can be:
 
 * Person
 * Object
-* Stuff
 
 Person segments contain additional person-centric bimanual hand-object interaction fields.
 
@@ -118,8 +113,8 @@ SingleQuery-BHOI-Dataset/
 ├── LICENSE-DATA.md
 ├── annotations/
 │   ├── README.md
-│   ├── singlequery_bhoi_train.json
-│   └── singlequery_bhoi_val.json
+│   ├── singlequery_bhoi_train.zip
+│   └── singlequery_bhoi_val.zip
 ├── examples/
 │   ├── 0.jpg
 │   ├── 0.json
@@ -131,22 +126,51 @@ SingleQuery-BHOI-Dataset/
     └── SingleQueryBHOIVisualizer.exe
 ```
 
-## Annotations
+## Download
 
-The `annotations/` directory is intended for the full annotation files used for training, validation, and evaluation.
+The dataset annotation files are provided as compressed zip files under the `annotations/` directory.
 
-| File                          | Description                   | Status      |
-| ----------------------------- | ----------------------------- | ----------- |
-| `singlequery_bhoi_train.json` | Training annotations          | Coming soon |
-| `singlequery_bhoi_val.json`   | Validation annotations        | Coming soon |
+| Resource | File | Description |
+|---|---|---|
+| Training annotations | [`annotations/singlequery_bhoi_train.zip`](./annotations/singlequery_bhoi_train.zip) | A zip file containing one training JSON file |
+| Validation annotations | [`annotations/singlequery_bhoi_val.zip`](./annotations/singlequery_bhoi_val.zip) | A zip file containing per-image validation JSON files |
+| Annotation schema | [`annotation_schema.md`](./annotation_schema.md) | Description of the released annotation format |
+| Example files | [`examples/`](./examples) | Example COCO images and corresponding per-image JSON files |
+| Visualization tool | [`tools/`](./tools) | Executable-based annotation visualization tool |
 
-Large annotation files may be distributed through **GitHub Releases** instead of being committed directly to the repository.
+## Training Annotation Package
 
-See:
+The training annotations are distributed as a zip file containing a single JSON file.
 
 ```text
-annotations/README.md
+annotations/singlequery_bhoi_train.zip
+└── singlequery_bhoi_train.json
 ```
+
+The training JSON follows a COCO Panoptic-style structure and contains the training image entries, category definitions, and image-level annotations.
+
+The released training annotations retain only the labels required for method training and evaluation:
+
+- Object/person detection labels
+- Body keypoints
+- Hand-object interaction labels
+
+## Validation Annotation Package
+
+The validation annotations are distributed as a zip file containing a folder of per-image JSON files.
+
+```text
+annotations/singlequery_bhoi_val.zip
+└── singlequery_bhoi_val/
+    ├── 000000000139.json
+    ├── 000000000285.json
+    ├── 000000000632.json
+    └── ...
+```
+
+Each validation JSON file contains the annotation for the corresponding image only.
+
+This structure is intended to simplify per-image inspection, visualization, and evaluation.
 
 ## Examples
 
@@ -187,9 +211,9 @@ Users should download the original images from the official COCO dataset website
 
 Only a small number of example COCO images may be included in the `examples/` directory for demonstration and visualization purposes.
 
-## Expected Dataset Layout for Training
+## Expected Dataset Layout for Training and Evaluation
 
-For actual training or evaluation, the recommended dataset layout is:
+After downloading the original COCO images and extracting the released annotation zip files, the recommended dataset layout is:
 
 ```text
 datasets/
@@ -204,13 +228,17 @@ datasets/
     │   └── ...
     └── annotations/
         ├── singlequery_bhoi_train.json
-        └── singlequery_bhoi_val.json
+        └── singlequery_bhoi_val/
+            ├── 000000000139.json
+            ├── 000000000285.json
+            └── ...
 ```
 
 In this layout:
 
-* `train2017/` and `val2017/` contain the original COCO images.
-* `annotations/` contains the released SingleQuery-BHOI annotation JSON files.
+- `train2017/` and `val2017/` contain the original COCO images.
+- `singlequery_bhoi_train.json` is extracted from `singlequery_bhoi_train.zip`.
+- `singlequery_bhoi_val/` is extracted from `singlequery_bhoi_val.zip` and contains per-image validation JSON files.
 
 ## Visualization Tool
 
@@ -219,8 +247,6 @@ We provide an executable-based visualization tool for inspecting the annotations
 The visualization tool can load an image and its corresponding JSON annotation file, then render person-centric bimanual interaction annotations, including:
 
 * Human boxes
-* Body keypoints
-* Face boxes
 * Left/right hand boxes
 * Hand keypoints
 * Hand contact states
@@ -258,17 +284,6 @@ examples/0.json
 ```
 
 The tool will render the annotation over the image.
-
-## Download
-
-The dataset resources will be released as follows.
-
-| Resource               | Description                                  | Status      |
-| ---------------------- | -------------------------------------------- | ----------- |
-| Training annotations   | Full training annotation JSON                | Available   |
-| Validation annotations | Full validation annotation JSON              | Available   |
-| Example files          | Example COCO images and per-image JSON files | Available   |
-| Visualization tool     | Executable-based annotation viewer           | Available   |
 
 ## Project Page
 
@@ -327,5 +342,5 @@ If you use this dataset or find it useful for your research, please cite our pap
 For questions, please open an issue in this repository or contact:
 
 ```text
-jonghyun0.kim
+jonghyun0.kim@lge.com
 ```
