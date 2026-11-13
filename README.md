@@ -85,7 +85,7 @@ annotation_schema.md
 
 | Item                |   Count |
 | ------------------- | ------: |
-| Images              |  64,111 |
+| Images              | 118,287 |
 | Person instances    | 262,351 |
 | Hand-contact labels | 102,821 |
 | No-contact          |  30,403 |
